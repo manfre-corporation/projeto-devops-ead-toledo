@@ -12,7 +12,6 @@ bot.remove_command('help')
 @bot.event
 async def on_ready():
     print(f'Estou conectado como {bot.user}!')
-    current_time.start()
 
 
 @bot.event
@@ -235,16 +234,6 @@ async def help(ctx):
     )
     
     await ctx.send(embed=embed)
-
-@tasks.loop(seconds=1800)
-async def current_time():
-    now = datetime.datetime.now()
-
-    now = now.strftime("%d/%m/%Y às %H:%M:%S")
-
-    channel = bot.get_channel(1026220221129830462)   
-
-    await channel.send("Data atual: " + now + " --- Digite !help para saber todos os meus comandos!")
 
 
 TOKEN = config("TOKEN")  
