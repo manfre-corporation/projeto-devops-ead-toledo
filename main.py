@@ -7,18 +7,14 @@ from decouple import config
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-
-#remover comando 'help' nativo
 bot.remove_command('help')
 
-#eventos de bot conectado
 @bot.event
 async def on_ready():
     print(f'Estou conectado como {bot.user}!')
-    current_time.start() #iniciando a função para para a tasks.loop funcionar
+    current_time.start()
 
 
-#no momento em que o usuário entra no servidor, recebe a mensagem de bem vindo com o link para as regras.
 @bot.event
 async def on_member_join(member):
     print(f'{member} está conectado no {member.guild}!')
@@ -27,7 +23,6 @@ async def on_member_join(member):
     await member.send(embed=embed)
 
 
-#quando a mensagem é editada, aparece o que foi editado.
 @bot.event
 async def on_message_edit(before, after):
     await before.channel.send(
@@ -36,7 +31,6 @@ async def on_message_edit(before, after):
         f'Depois: {after.content}'
     )
 
-#comando para o bot entrar no canal de voz, somente depois que o usuário estiver no canal de voz, tocar e música e sair do canal de voz.
 @bot.command()
 async def entrar(ctx):
     if (ctx.author.voice):
@@ -61,7 +55,6 @@ async def play(ctx):
     if not voice_client.is_playing():
         voice_client.play(audio_source, after=None)
 
-#calculadora com argumentos.
 @bot.command(name="calcular", help="Requer argumento, ex: 2 * 3 + 5")
 async def calcular(ctx, *expressao):
     expressao = "".join(expressao)
@@ -71,7 +64,6 @@ async def calcular(ctx, *expressao):
     await ctx.send("A resposta é: " + str(resposta))
 
   
-#Embed com as regras do servidor.
 @bot.command()
 async def regras(ctx):
     embed = discord.Embed(
@@ -123,7 +115,6 @@ async def regras(ctx):
     await ctx.send(embed=embed)
 
 
-#digita oi e o bot responde
 @bot.command(name="oi")
 async def send_hello(ctx):
     name = ctx.author.name
@@ -131,7 +122,6 @@ async def send_hello(ctx):
     await ctx.send(response)
 
 
-#envia uma mensagem no privado do usuário, precisa estar habilidado no discord para receber a mensagem.
 @bot.command(name="privado")
 async def send_dm(ctx):
     try:
@@ -141,19 +131,16 @@ async def send_dm(ctx):
         await ctx.send("Habilite para receber mensagem de qualquer servidor! caso contrario, não consigo te mandar mensagem!")
 
 
-#buscar no google + qualquer frase
 @bot.command()
 async def google(ctx,*,arg):
   await ctx.send(f"https://www.google.com/search?q={arg.replace(' ', '+')}")  
 
 
-#buscar no youtube + qualquer frase
 @bot.command()
 async def youtube(ctx,*,arg):
   await ctx.send(f"https://www.youtube.com/results?search_query={arg.replace(' ', '+')}")
   
 
-#Botão com frases famosas utilizando o parametro discord.ui.View
 class Frases(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -185,7 +172,6 @@ async def frases(ctx):
     await ctx.reply(view=view)
 
 
-#Embed da seção !help, foi dessabilitado !help nativo e incluido um novo com mais detalhes e personalização.
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(
@@ -250,7 +236,6 @@ async def help(ctx):
     
     await ctx.send(embed=embed)
 
-#loop de mensagem a cada 30 minutos com data e horário atual e informação sobre o !help
 @tasks.loop(seconds=1800)
 async def current_time():
     now = datetime.datetime.now()
@@ -262,5 +247,5 @@ async def current_time():
     await channel.send("Data atual: " + now + " --- Digite !help para saber todos os meus comandos!")
 
 
-TOKEN = config("TOKEN")     #Token de segurança
+TOKEN = config("TOKEN")  
 bot.run(TOKEN)
